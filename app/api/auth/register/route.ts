@@ -1,7 +1,7 @@
 // app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { api } from '@/app/api/api';
-import type { ApiError } from '@/app/api/api';
+import { api } from '@/lib/api/api';
+import type { ApiError } from '@/lib/api/api';
 import { cookies } from 'next/headers';
 import { parse } from 'cookie';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';

@@ -1,7 +1,7 @@
 // app/api/users/me/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { api, ApiError } from '@/app/api/api';
+import { api, ApiError } from '@/lib/api/api';
 import type { User } from '@/types/user';
 
 export async function GET() {

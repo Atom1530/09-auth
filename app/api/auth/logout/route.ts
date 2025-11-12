@@ -1,4 +1,4 @@
-import { api, ApiError } from '@/app/api/api';
+import { api, ApiError } from '@/lib/api/api';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
