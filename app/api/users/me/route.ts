@@ -1,45 +1,66 @@
 // app/api/users/me/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { api, ApiError } from '@/lib/api/api';
-import type { User } from '@/types/user';
+import { api } from '@/app/api/api';
+import { isAxiosError } from 'axios';
 
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
 
-    const { data } = await api.get<User>('/users/me', {
-      headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
+    const res = await api.get('/users/me', {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
     });
 
-    return NextResponse.json(data);
+    return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
-    const err = error as ApiError;
-    const status = err.response?.status ?? 500;
-    const message = err.response?.data?.error ?? err.message;
-
-    return NextResponse.json({ error: message }, { status });
+    if (isAxiosError(error)) {
+      console.error('Users/me GET error', {
+        path: '/users/me',
+        status: error.status ?? error.response?.status,
+        message: error.message,
+        data: error.response?.data,
+      });
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status ?? error.response?.status ?? 500 },
+      );
+    }
+    console.error('Unexpected Users/me GET error', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(request: Request) {
   try {
-    const body = await req.json();
-
     const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
+    const body = await request.json();
 
-    const { data } = await api.patch<User>('/users/me', body, {
-      headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
+    const res = await api.patch('/users/me', body, {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
     });
 
-    return NextResponse.json(data);
+    return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
-    const err = error as ApiError;
-    const status = err.response?.status ?? 500;
-    const message = err.response?.data?.error ?? err.message;
-
-    return NextResponse.json({ error: message }, { status });
+    if (isAxiosError(error)) {
+      console.error('Users/me PATCH error', {
+        path: '/users/me',
+        status: error.status ?? error.response?.status,
+        message: error.message,
+        data: error.response?.data,
+      });
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status ?? error.response?.status ?? 500 },
+      );
+    }
+    console.error('Unexpected Users/me PATCH error', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

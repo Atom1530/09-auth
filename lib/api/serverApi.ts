@@ -58,17 +58,12 @@ export async function getMe(): Promise<User> {
   return data;
 }
 
-interface SessionOk {
-  message: string;
-}
+export type SessionAxiosResponse = AxiosResponse<{ message?: string }>;
 
-export const checkServerSession = async (): Promise<boolean> => {
+export const checkServerSession = async (): Promise<SessionAxiosResponse> => {
   const cookieStore = await cookies();
-
-  const { status, data } = await nextServer.get<SessionOk>('/auth/session', {
+  return nextServer.get<{ message?: string }>('/auth/session', {
     headers: { Cookie: cookieStore.toString() },
     validateStatus: () => true,
   });
-
-  return status === 200 && data?.message === 'Session refreshed successfully';
 };

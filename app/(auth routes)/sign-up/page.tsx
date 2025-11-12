@@ -6,7 +6,7 @@ import { register, RegisterData } from '@/lib/api/clientApi';
 import css from './SignUpPage.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ApiError } from '@/lib/api/api';
+import type { ApiError } from '@/app/api/api';
 import { useAuthStore } from '@/lib/store/authStore';
 
 const SignUpPage = () => {
@@ -31,11 +31,17 @@ const SignUpPage = () => {
       }
     } catch (err) {
       const apiErr = err as ApiError;
+      const status = apiErr.response?.status;
 
-      const message =
-        apiErr.response?.data?.error ?? apiErr.message ?? 'Something went wrong. Please try again.';
-
-      setError(message);
+      if (status === 409) {
+        setError('User with this email already exists.');
+      } else {
+        setError(
+          apiErr.response?.data?.error ??
+            apiErr.message ??
+            'Something went wrong. Please try again.',
+        );
+      }
     }
   };
 

@@ -1,50 +1,97 @@
 // app/api/notes/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { api, ApiError } from '@/lib/api/api';
-import type { Note } from '@/types/note';
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { api } from '@/app/api/api';
+import { isAxiosError } from 'axios';
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(_req: NextRequest, { params }: Props) {
-  const { id } = await params;
-
+export async function GET(_req: Request, { params }: Props) {
   try {
-    const cookieHeader = cookies().toString();
+    const cookieStore = await cookies();
+    const { id } = await params;
 
-    const { data } = await api.get<Note>(`/notes/${id}`, {
-      headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
+    const res = await api(`/notes/${id}`, {
+      headers: { Cookie: cookieStore.toString() },
     });
 
-    return NextResponse.json(data);
+    return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
-    const err = error as ApiError;
-
-    const status = err.response?.status ?? 500;
-    const message = err.response?.data?.error ?? err.message;
-
-    return NextResponse.json({ error: message }, { status });
+    if (isAxiosError(error)) {
+      console.error('Notes GET error', {
+        path: '/notes/[id]',
+        status: error.response?.status ?? error.status,
+        message: error.message,
+        data: error.response?.data,
+      });
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status ?? error.response?.status ?? 500 },
+      );
+    }
+    console.error('Unexpected Notes GET error', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-export async function POST(_req: NextRequest, { params }: Props) {
-  const { id } = await params;
 
+export async function DELETE(_req: Request, { params }: Props) {
   try {
-    const cookieHeader = cookies().toString();
+    const cookieStore = await cookies();
+    const { id } = await params;
 
-    const { data } = await api.get<Note>(`/notes/${id}`, {
-      headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
+    const res = await api.delete(`/notes/${id}`, {
+      headers: { Cookie: cookieStore.toString() },
     });
 
-    return NextResponse.json(data);
+    return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
-    const err = error as ApiError;
+    if (isAxiosError(error)) {
+      console.error('Notes DELETE error', {
+        path: '/notes/[id]',
+        status: error.response?.status ?? error.status,
+        message: error.message,
+        data: error.response?.data,
+      });
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status ?? error.response?.status ?? 500 },
+      );
+    }
+    console.error('Unexpected Notes DELETE error', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
 
-    const status = err.response?.status ?? 500;
-    const message = err.response?.data?.error ?? err.message;
+export async function PATCH(request: Request, { params }: Props) {
+  try {
+    const cookieStore = await cookies();
+    const { id } = await params;
+    const body = await request.json();
 
-    return NextResponse.json({ error: message }, { status });
+    const res = await api.patch(`/notes/${id}`, body, {
+      headers: {
+        Cookie: cookieStore.toString(),
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return NextResponse.json(res.data, { status: res.status });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.error('Notes PATCH error', {
+        path: '/notes/[id]',
+        status: error.response?.status ?? error.status,
+        message: error.message,
+        data: error.response?.data,
+      });
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status ?? error.response?.status ?? 500 },
+      );
+    }
+    console.error('Unexpected Notes PATCH error', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
