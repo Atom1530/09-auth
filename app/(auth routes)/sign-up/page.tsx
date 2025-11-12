@@ -6,8 +6,8 @@ import { register, RegisterData } from '@/lib/api/clientApi';
 import css from './SignUpPage.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ApiError } from '@/lib/api/api';
-import { useAuthStore } from '@/lib/store/userStore';
+import type { ApiError } from '@/app/api/api';
+import { useAuthStore } from '@/lib/store/authStore';
 
 const SignUpPage = () => {
   const router = useRouter();

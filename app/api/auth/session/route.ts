@@ -1,5 +1,5 @@
 //app/api/auth/session/route.ts
-import { api, ApiError } from '@/lib/api/api';
+import { api, ApiError } from '@/app/api/api';
 import { parse } from 'cookie';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';

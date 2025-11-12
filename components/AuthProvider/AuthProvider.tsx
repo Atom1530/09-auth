@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 import { checkSession, getMe } from '@/lib/api/clientApi';
-import { useAuthStore } from '@/lib/store/userStore';
+import { useAuthStore } from '@/lib/store/authStore';
 
 interface Props {
   children: React.ReactNode;

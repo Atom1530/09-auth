@@ -1,7 +1,7 @@
 // app/api/notes/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import type { AxiosError } from 'axios';
-import { api } from '@/lib/api/api';
+import { api } from '@/app/api/api';
 
 type ApiErr = AxiosError<{ error?: string }>;
 

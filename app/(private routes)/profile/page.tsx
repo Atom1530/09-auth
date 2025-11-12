@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import css from './ProfilePage.module.css';
-import { useAuthStore } from '@/lib/store/userStore';
+import { useAuthStore } from '@/lib/store/authStore';
 
 const Profile = () => {
   const { user } = useAuthStore();

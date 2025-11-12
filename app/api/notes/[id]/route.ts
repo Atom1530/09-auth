@@ -1,6 +1,6 @@
 // app/api/notes/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { api, ApiError } from '@/lib/api/api';
+import { api, ApiError } from '@/app/api/api';
 import type { Note } from '@/types/note';
 import { cookies } from 'next/headers';
 
