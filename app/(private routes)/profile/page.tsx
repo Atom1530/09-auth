@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import css from './Profile.module.css';
+import css from './ProfilePage.module.css';
 import { getMe } from '@/lib/api/serverApi';
 
 export const metadata: Metadata = {
