@@ -1,8 +1,9 @@
 // app/api/auth/logout/route.ts
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { api } from '@/app/api/api';
+import { api } from '../../api';
 import { isAxiosError } from 'axios';
+import { logErrorResponse } from '../../_utils/utils';
 
 export async function POST() {
   try {
@@ -23,19 +24,13 @@ export async function POST() {
     return NextResponse.json({ message: 'Logged out successfully' }, { status: 200 });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Auth logout error', {
-        path: '/auth/logout',
-        status: error.response?.status ?? error.status,
-        message: error.message,
-        data: error.response?.data,
-      });
+      logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-        { status: error.status ?? error.response?.status ?? 500 },
+        { status: error.status },
       );
     }
-
-    console.error('Unexpected logout error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -49,7 +49,7 @@ export async function fetchNoteById(id: string): Promise<Note> {
   return data;
 }
 export async function getMe(): Promise<User> {
-  const cookieHeader = cookies().toString();
+  const cookieHeader = await cookies().toString();
 
   const { data } = await nextServer.get<User>('/users/me', {
     headers: cookieHeader ? { Cookie: cookieHeader } : undefined,

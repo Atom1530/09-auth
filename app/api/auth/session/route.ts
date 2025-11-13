@@ -1,9 +1,10 @@
 // app/api/auth/session/route.ts
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { api } from '@/app/api/api';
+import { api } from '../../api';
 import { parse } from 'cookie';
 import { isAxiosError } from 'axios';
+import { logErrorResponse } from '../../_utils/utils';
 
 export async function GET() {
   try {
@@ -33,12 +34,8 @@ export async function GET() {
             maxAge: parsed['Max-Age'] ? Number(parsed['Max-Age']) : undefined,
           };
 
-          if (parsed.accessToken) {
-            cookieStore.set('accessToken', parsed.accessToken, options);
-          }
-          if (parsed.refreshToken) {
-            cookieStore.set('refreshToken', parsed.refreshToken, options);
-          }
+          if (parsed.accessToken) cookieStore.set('accessToken', parsed.accessToken, options);
+          if (parsed.refreshToken) cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
 
         return NextResponse.json({ success: true }, { status: 200 });
@@ -48,16 +45,10 @@ export async function GET() {
     return NextResponse.json({ success: false }, { status: 200 });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Auth session error', {
-        path: '/auth/session',
-        status: error.response?.status,
-        message: error.message,
-        data: error.response?.data,
-      });
+      logErrorResponse(error.response?.data);
       return NextResponse.json({ success: false }, { status: 200 });
     }
-
-    console.error('Unexpected session error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ success: false }, { status: 200 });
   }
 }

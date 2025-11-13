@@ -3,8 +3,9 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { api } from '@/app/api/api';
+import { api } from '../../api';
 import { isAxiosError } from 'axios';
+import { logErrorResponse } from '../../_utils/utils';
 
 export async function GET() {
   try {
@@ -19,18 +20,13 @@ export async function GET() {
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Users/me GET error', {
-        path: '/users/me',
-        status: error.status ?? error.response?.status,
-        message: error.message,
-        data: error.response?.data,
-      });
+      logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-        { status: error.status ?? error.response?.status ?? 500 },
+        { status: error.status },
       );
     }
-    console.error('Unexpected Users/me GET error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -49,18 +45,13 @@ export async function PATCH(request: Request) {
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Users/me PATCH error', {
-        path: '/users/me',
-        status: error.status ?? error.response?.status,
-        message: error.message,
-        data: error.response?.data,
-      });
+      logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-        { status: error.status ?? error.response?.status ?? 500 },
+        { status: error.status },
       );
     }
-    console.error('Unexpected Users/me PATCH error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

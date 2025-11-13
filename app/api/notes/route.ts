@@ -2,7 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { isAxiosError } from 'axios';
-import { api } from '@/app/api/api';
+import { api } from '../api';
+import { logErrorResponse } from '../_utils/utils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -28,18 +29,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Notes GET error', {
-        path: '/notes',
-        status: error.response?.status ?? error.status,
-        message: error.message,
-        data: error.response?.data,
-      });
+      logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-        { status: error.status ?? error.response?.status ?? 500 },
+        { status: error.status },
       );
     }
-    console.error('Unexpected Notes GET error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -59,18 +55,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Notes POST error', {
-        path: '/notes',
-        status: error.response?.status ?? error.status,
-        message: error.message,
-        data: error.response?.data,
-      });
+      logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-        { status: error.status ?? error.response?.status ?? 500 },
+        { status: error.status },
       );
     }
-    console.error('Unexpected Notes POST error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

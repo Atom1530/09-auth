@@ -1,9 +1,10 @@
 // app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { api } from '@/app/api/api'; // проверь, чтобы путь совпадал с твоей структурой
+import { api } from '@/app/api/api';
 import { cookies } from 'next/headers';
 import { parse } from 'cookie';
 import { isAxiosError } from 'axios';
+import { logErrorResponse } from '../../_utils/utils';
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,20 +36,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error('Auth login error', {
-        path: '/auth/login',
-        status: error.response?.status ?? error.status,
-        message: error.message,
-        data: error.response?.data,
-      });
-
+      logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-        { status: error.status ?? error.response?.status ?? 500 },
+        { status: error.status },
       );
     }
-
-    console.error('Unexpected login error', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
