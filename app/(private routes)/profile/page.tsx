@@ -26,29 +26,31 @@ export default async function Profile() {
   const user = await getMe();
 
   return (
-    <section className={css.container}>
-      <div>
-        <h1 className={css.title}>My Profile</h1>
-      </div>
+    <main className={css.mainContent}>
+      <div className={css.profileCard}>
+        <div className={css.header}>
+          <h1 className={css.formTitle}>Profile Page</h1>
+          <Link href="/profile/edit" className={css.editProfileButton}>
+            Edit Profile
+          </Link>
+        </div>
 
-      <Link href="/profile/edit" className={css.edit}>
-        Edit profile
-      </Link>
+        <div className={css.avatarWrapper}>
+          <Image
+            src={user.avatar ?? 'https://ac.goit.global/fullstack/default_avatar.jpg'}
+            alt={user.email ?? 'User avatar'}
+            width={120}
+            height={120}
+            className={css.avatar}
+            priority
+          />
+        </div>
 
-      <div>
-        <Image
-          src={user.avatar ?? 'https://ac.goit.global/fullstack/default_avatar.jpg'}
-          alt={user.email ?? 'User avatar'}
-          width={200}
-          height={200}
-        />
+        <div className={css.profileInfo}>
+          <p>Username: {user.username}</p>
+          <p>Email: {user.email}</p>
+        </div>
       </div>
-
-      <div>
-        <h2 className={css.text}>Name: {user.username}</h2>
-        <h2 className={css.text}>Email: {user.email}</h2>
-        <p className={css.text}>Information about: {user.username}</p>
-      </div>
-    </section>
+    </main>
   );
 }
