@@ -1,8 +1,7 @@
 // app/api/api.ts
-import axios, { AxiosError } from 'axios';
-export type ApiError = AxiosError<{ error: string }>;
+import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'https://notehub-api.goit.study/',
+  baseURL: 'https://notehub-api.goit.study',
   withCredentials: true,
 });
