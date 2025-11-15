@@ -9,11 +9,6 @@ interface NotesResponse {
   totalPages: number;
 }
 
-interface NotesResponse {
-  notes: Note[];
-  totalPages: number;
-}
-
 export async function fetchNotes(
   search: string,
   page: number,
@@ -49,7 +44,8 @@ export async function fetchNoteById(id: string): Promise<Note> {
   return data;
 }
 export async function getMe(): Promise<User> {
-  const cookieHeader = await cookies().toString();
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
 
   const { data } = await nextServer.get<User>('/users/me', {
     headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
