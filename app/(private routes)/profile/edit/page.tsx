@@ -5,7 +5,7 @@ import css from './ProfileEdit.module.css';
 import { useAuthStore } from '@/lib/store/authStore';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ApiError } from '../../../api/types';
+import { ApiError } from '@/app/api/types';
 import { useState } from 'react';
 
 interface EditData {
