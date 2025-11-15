@@ -6,7 +6,7 @@ import { register, RegisterData } from '@/lib/api/clientApi';
 import css from './SignUpPage.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ApiError } from '../../api/types';
+import { ApiError } from '@/app/api/types';
 import { useAuthStore } from '@/lib/store/authStore';
 
 const SignUpPage = () => {
